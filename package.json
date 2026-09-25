@@ -1,0 +1,14 @@
+{
+  "name": "vocab-reader",
+  "version": "1.0.0",
+  "private": true,
+  "description": "输入今天背的单词，自动生成一篇包含这些词的双语短文；生词在英文与中文里都可点击查词。本地运行，零第三方依赖。",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "MIT"
+}

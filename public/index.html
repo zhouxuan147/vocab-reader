@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>生词阅读器</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>📖</text></svg>" />
+<link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+
+<!-- ============ 主界面：输入 + 右侧历史 ============ -->
+<section id="home" class="view">
+  <header class="home-head">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none">
+          <path d="M12 6.5C10.6 5.2 8.6 4.6 6 4.6c-.6 0-1 .4-1 1v11.2c0 .6.4 1 1 1 2.6 0 4.6.6 6 1.9 1.4-1.3 3.4-1.9 6-1.9.6 0 1-.4 1-1V5.6c0-.6-.4-1-1-1-2.6 0-4.6.6-6 1.9Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+          <path d="M12 6.5v13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+      </span>
+      <span class="brand-name">生词阅读器</span>
+    </div>
+    <button id="gear" class="icon-btn" title="设置" aria-label="设置">⚙</button>
+  </header>
+
+  <div class="home-grid">
+    <main class="home-main">
+      <h1 class="large-title">今天背了哪些词？</h1>
+      <p class="subtitle">把它们扔进去，读一篇只属于你的短文。文中标出的词，点一下就能看到意思。</p>
+
+      <form id="form" class="card composer" autocomplete="off">
+        <textarea id="words" class="big-input" rows="2" placeholder="输入今天学的词，逗号或空格分隔&#10;endurance, resilience, orbit"></textarea>
+
+        <div class="rowline">
+          <span id="counter" class="counter">0 / 50</span>
+          <span id="hint" class="hint"></span>
+        </div>
+        <div id="chips" class="chips"></div>
+
+        <div class="row">
+          <input id="theme" class="small-input" type="text" placeholder="主题（可选）：太空" />
+          <button id="go" class="btn" type="submit">
+            <span class="spinner hidden" id="spinner"></span><span id="go-label">生成</span>
+          </button>
+        </div>
+      </form>
+
+      <div id="status" class="status hidden">
+        <span class="spinner on"></span>
+        <span>
+          <b id="status-text">正在写文章…</b>
+          <i id="status-sub"></i>
+        </span>
+      </div>
+
+      <p id="home-error" class="err hidden"></p>
+
+      <p class="use-note">当前使用 <b id="use-name">—</b>
+        <button id="use-switch" class="text-btn" type="button">切换供应商</button>
+      </p>
+    </main>
+
+    <aside class="home-side">
+      <div class="card side-card">
+        <div class="side-head">
+          <h2>历史记录</h2>
+          <button id="hist-clear" class="text-btn hidden" type="button">清空</button>
+        </div>
+        <div id="hist-list" class="hist-list"></div>
+        <p id="hist-empty" class="side-empty">还没有读过。生成第一篇后，它会留在这里。</p>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ 阅读页：左英文 / 右译文 ============ -->
+<section id="read" class="view hidden">
+  <div class="topbar">
+    <div class="topbar-inner">
+      <button id="back" class="back" type="button">
+        <svg width="11" height="18" viewBox="0 0 11 18" aria-hidden="true"><path d="M9.5 1.5L1.5 9l8 7.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>返回</span>
+      </button>
+
+      <div class="topbar-title"><span id="r-top-title"></span></div>
+
+      <div class="topbar-right">
+        <div class="segmented" id="modes">
+          <button class="mode on" data-mode="split" type="button">对照</button>
+          <button class="mode" data-mode="en" type="button">英文</button>
+          <button class="mode" data-mode="zh" type="button">译文</button>
+          <button class="mode" data-mode="gloss" type="button">词表</button>
+        </div>
+        <button id="r-gear" class="icon-btn" title="设置" aria-label="设置">⚙</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="read-wrap">
+    <header class="read-head">
+      <h1 id="r-title"></h1>
+      <p id="r-title-zh" class="title-zh"></p>
+      <p id="r-meta" class="meta"></p>
+      <div id="r-words" class="read-words"></div>
+    </header>
+
+    <article id="r-body" class="read-body"></article>
+
+    <footer class="read-foot">
+      <button id="again" class="ghost" type="button">换一篇</button>
+      <span id="r-count" class="count"></span>
+    </footer>
+  </div>
+</section>
+
+<div id="pop" class="pop hidden"></div>
+
+<div id="modal" class="modal hidden">
+  <div class="modal-box">
+    <h3>设置</h3>
+
+    <div class="provs" id="providers"></div>
+
+    <label>API Key
+      <input id="apiKey" type="password" placeholder="sk-xxxxxxxxxxxxxxxx" />
+    </label>
+    <p class="key-line">
+      <span id="key-state"></span>
+      <span class="key-actions">
+        <button id="key-clear" class="text-btn hidden" type="button">清除</button>
+        <a id="key-url" href="#" target="_blank" rel="noopener">去获取 →</a>
+      </span>
+    </p>
+
+    <label>模型
+      <select id="model"></select>
+    </label>
+
+    <p class="tip">两家的 Key 分开保存，切换时不会互相覆盖；都只写进本机的 <code>config.json</code>，不上传任何地方。</p>
+    <div class="modal-actions">
+      <button id="cancel" class="ghost" type="button">取消</button>
+      <button id="save" class="btn" type="button">保存</button>
+    </div>
+  </div>
+</div>
+
+<script src="/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+{
+  "_说明": "复制这个文件为 config.json 再填 Key。config.json 已被 .gitignore 忽略，不会被提交到 GitHub。",
+  "provider": "qwen",
+  "qwen": {
+    "apiKey": "",
+    "model": "qwen-plus"
+  },
+  "deepseek": {
+    "apiKey": "",
+    "model": "deepseek-chat"
+  },
+  "autoOpen": true
+}
