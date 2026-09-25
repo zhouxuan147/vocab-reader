@@ -112,27 +112,3 @@ Windows 双击 `启动.bat`，macOS / Linux 用 `./start.sh`；浏览器会自�
 | `启动.bat` / `start.sh` | 一键启动 |
 | `screenshots/` | 四张界面截图 |
 
-## 发布到 GitHub
-
-```bash
-git init
-git add .
-git commit -m "feat: 生词阅读器"
-git remote add origin https://github.com/<你的用户名>/<仓库名>.git
-git branch -M main
-git push -u origin main
-```
-
-- 推之前确认 `git status` 里**没有 `config.json`**（.gitignore 已排除）；万一以前误提交过，用 `git rm --cached config.json` 移除，并去供应商后台作废那把 Key
-- 仓库建议选 Public；Private 也行，反正 Key 不进仓库
-- 用 HTTPS 推送时密码栏要填 **Personal Access Token**（GitHub → Settings → Developer settings → Tokens(classic)，勾 `repo`），不再是登录密码
-
-## 报错速查
-
-| 提示 | 原因 |
-| --- | --- |
-| 这次有 N 个词，最多 50 个 | 词太多，建议删减或分批 |
-| 还没填 XXX 的 API Key | 当前这家没填 Key，去 ⚙ 填上或切到另一家 |
-| Incorrect API key / Authentication Fails | Key 填错或过期，去 ⚙ 重填 |
-| 请求超时 | 网络慢，或用了推理模型，再点一次生成 |
-| 模型返回格式异常 | 偶发，换一篇即可 |
